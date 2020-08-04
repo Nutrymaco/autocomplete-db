@@ -19,7 +19,6 @@ public class LoadWords {
         return args -> {
             List<String> words = loadLinesFromFile("/words.txt");
             for (String word : words) {
-                System.out.println(word);
                 wordsService.addWord(word);
             }
         };
