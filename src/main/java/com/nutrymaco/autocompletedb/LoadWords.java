@@ -1,6 +1,7 @@
 package com.nutrymaco.autocompletedb;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.digester.DocumentProperties;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,6 +9,8 @@ import org.springframework.context.annotation.Configuration;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -32,7 +35,7 @@ public class LoadWords {
 
         try {
             InputStream is = getClass().getResourceAsStream(fileName);
-            LineNumberReader reader = new LineNumberReader(new InputStreamReader(is));
+            LineNumberReader reader = new LineNumberReader(new InputStreamReader(is, StandardCharsets.UTF_8));
             while (reader.ready()) {
                 String line = reader.readLine();
                 if (!"".equals(line)) {
