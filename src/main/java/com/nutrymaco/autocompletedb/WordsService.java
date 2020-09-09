@@ -3,6 +3,7 @@ package com.nutrymaco.autocompletedb;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +12,7 @@ import java.util.TreeMap;
 @Service
 public class WordsService {
     private final List<String> words = new ArrayList<>();
-
+    private List<String> wordsFromQuery = null;
     private final static Map<Character, Character> engRus = new TreeMap<>(){
         {
             put('q', 'й');
@@ -72,32 +73,36 @@ public class WordsService {
         if ("".equals(query)) {
             return words;
         }
+        wordsFromQuery = Arrays.asList(query.split(" "));
         query = query.toLowerCase();
         String[] queryWords = query.split(" ");
         String prefix = queryWords[queryWords.length - 1];
 
-        List<String> withPrefix = findWordsByPrefix(prefix, words);
+        List<String> withPrefix = findWordsByPrefix(prefix);
 
         return withPrefix;
     }
 
-    private static List<String> findWordsByPrefix(String prefix, List<String> words) {
+    private List<String> findWordsByPrefix(String prefix) {
         List<String> withPrefix = new LinkedList<>();
         for (String word : words) {
-            if (word.startsWith(prefix) || word.startsWith(invertString(prefix))) {
+            if (wordMatchPrefix(word, prefix) && !wordIsPresentInQuery(word)) {
                 withPrefix.add(word);
             }
         }
         return withPrefix;
     }
 
-    private static boolean wordMatchWord(String word, String[] otherWords) {
-        for (String other : otherWords) {
-            if (word.equals(other)) {
+    private boolean wordMatchPrefix(String word, String prefix) {
+        return word.startsWith(prefix) || word.startsWith(invertString(prefix));
+    }
+
+    private boolean wordIsPresentInQuery(String word) {
+        for (String queryWord : wordsFromQuery) {
+            if (word.equals(queryWord)) {
                 return true;
             }
         }
-
         return false;
     }
 
